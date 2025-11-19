@@ -24,8 +24,9 @@ To write a Java program that reads an integer from the user and displays all the
  ```
 /*
 Program to implement a Looping Statement using Java
-Developed by: DHINESH R
-RegisterNumber: 212223220019
+Program to implement variables and Operators using Java
+Developed by:Iyalarasu C
+RegisterNumber: 212223040069
 */
 ```
 
@@ -56,5 +57,6 @@ public class Factors {
 
 ## RESULT:
 Therefore, the program successfully reads a number from the user and computes its factors.
+
 
 
