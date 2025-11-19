@@ -1,30 +1,31 @@
-# Ex.No:5(A) INPUTSTREAMREADER 
+# Ex.No:4(E) DESIGN PATTERN  ---- MEDIATOR PATTERN
 
 ## QUESTION:
-Write a program to demonstrate chaining of streams (BufferedReader on top of InputStreamReader on top of System.in)
+Create a ChatRoom class (mediator) and two users (colleagues) who send and receive messages through it. No direct communication allowed.
 
 ## AIM:
-To write a Java program that demonstrates stream chaining by placing a BufferedReader on top of an InputStreamReader, which in turn wraps System.in, and then reading user input using this chained stream.
+
 
 ## ALGORITHM :
-1. Create a BufferedReader object by chaining:
+1. Create a ChatRoom class that holds a collection of users, registers users using registerUser(), delivers messages using sendMessage(from, to, message).
 
-2. System.in → InputStreamReader → BufferedReader.
+2. Create a User class containing a user name, a reference to the ChatRoom mediator, a send() method that passes messages to the chat room, a receive() method to display incoming messages.
 
-3. Inside a try block Use readLine() to read the user's name.
+3. Read two user names and create User objects, automatically registering them with the chat room.
 
-4. Use readLine() again to read the user's age.
+4. Read the number of chat exchanges.
 
-5. Print the collected details.
+5. For each exchange read sender, receiver, and message, call the corresponding user’s send() method.
 
-6. Catch any IOException and display an appropriate error message.
+6. Ensure all communication happens only through the mediator (ChatRoom), not directly between users.
+
 
 
 
 ## PROGRAM:
  ```
 /*
-Program to implement a InputStreamReader using Java
+Program to implement a  Pattern using Java
 Developed by:Iyalarasu C
 RegisterNumber: 212223040069
 */
@@ -32,33 +33,84 @@ RegisterNumber: 212223040069
 
 ## SOURCE CODE:
 ```
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.*;
 
-public class ChainingStreamsExample {
-    public static void main(String[] args) {
-        // Chaining: System.in -> InputStreamReader -> BufferedReader
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            String name = br.readLine();
-            String age = br.readLine();
-            System.out.println("--- User Details ---");
-            System.out.println("Name: " + name);
-            System.out.println("Age: " + age);
-        } catch (IOException e) {
-            System.out.println("An error occurred: " + e.getMessage());
+class ChatRoom {
+    private Map<String, User> users = new HashMap<>();
+
+    public void registerUser(User user) {
+        users.put(user.getName(), user);
+    }
+
+    public void sendMessage(String from, String to, String message) {
+        User receiver = users.get(to);
+        if (receiver != null) {
+            receiver.receive(from, message);
+        } else {
+            System.out.println("User " + to + " not found");
         }
+    }
+}
+
+class User {
+    private String name;
+    private ChatRoom chatRoom;
+
+    public User(String name, ChatRoom chatRoom) {
+        this.name = name;
+        this.chatRoom = chatRoom;
+        chatRoom.registerUser(this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void send(String to, String message) {
+        chatRoom.sendMessage(name, to, message);
+    }
+
+    public void receive(String from, String message) {
+        System.out.println(from + " to " + name + ": " + message);
+    }
+}
+
+public class ChatApp {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        ChatRoom room = new ChatRoom();
+        User user1 = new User(sc.nextLine(), room); 
+        User user2 = new User(sc.nextLine(), room);
+
+        int n = Integer.parseInt(sc.nextLine());
+        for (int i = 0; i < n; i++) {
+            String sender = sc.nextLine();
+            String receiver = sc.nextLine();
+            String message = sc.nextLine();
+
+            if (sender.equals(user1.getName())) {
+                user1.send(receiver, message);
+            } else if (sender.equals(user2.getName())) {
+                user2.send(receiver, message);
+            } else {
+                System.out.println("Unknown sender");
+            }
+        }
+
+        sc.close();
     }
 }
 ```
 
 
 ## OUTPUT:
-<img width="827" height="557" alt="image" src="https://github.com/user-attachments/assets/b647d19d-16b6-48c7-8343-acca2fb720ec" />
+<img width="1143" height="846" alt="image" src="https://github.com/user-attachments/assets/e6ccf91b-1c65-4d94-bfdc-ddf4f68b9ad1" />
+
 
 
 ## RESULT:
-Therefore the program successfully demonstrates chaining of input streams by reading user data through a BufferedReader wrapped over an InputStreamReader.
+Therefore the program successfully demonstrates message exchange using the Mediator Pattern, with all user communication routed through the ChatRoom.
+
 
 
