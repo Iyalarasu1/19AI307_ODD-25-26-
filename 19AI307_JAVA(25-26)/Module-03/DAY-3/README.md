@@ -1,38 +1,37 @@
-# Ex.No:3(C) ABSTRACTION
+# Ex.No:3(D)    INTERFACE 
 
 ## QUESTION:
-In a secret intelligence facility, encrypted messages are stored as arrays of characters. Each type of agent has a different way to decode these messages. Define an abstract class Decoder with a method decodeMessage(String[] fragments).
-There are two types of agents:
+You’re developing a multi-console gaming platform that supports different controllers. Each controller has its own way of mapping buttons for actions like Jump, Shoot, and Pause.
 
-   AlphaAgent: Extracts a meaningful string by rearranging the fragments based on even indices first, then odd indices, and then reversing the final result.
+To unify this behavior, you're asked to design a system using Java Interfaces. The interface will standardize the controls, and each controller will implement them differently.
 
-   BetaAgent: Picks all fragments that start and end with the same letter, joins them with -, and removes all vowels from the resulting string.
+Your Task:
+Create an interface GameController with methods:
 
+jump()
+shoot()
+pause()
+Implement three controller types:
+
+PlayBoxController
+XCubeController
+RetroFunController
 
 ## AIM:
-To create an abstract class Decoder with an abstract method decodeMessage(), and implement two subclasses, AlphaAgent and BetaAgent, each with a unique decoding technique for encrypted message fragments.
+To design a unified controller system using Java Interfaces where different gaming consoles implement their own button mappings for actions like Jump, Shoot, and Pause.
 
 ## ALGORITHM :
-1. Create an abstract class Decoder containing an abstract method decodeMessage(String[] fragments).
+1. Define an interface GameController with methods :jump(),shoot(),pause()
 
-2. Create subclass AlphaAgent implementing decodeMessage() by collecting fragments at even indices,then collecting fragments at odd indices,reversing the combined list.
+2. Create class PlayBoxController implementing the interface and defining console-specific button actions.
 
-3. Joining all fragments into one decoded string.
+3. Create class XCubeController implementing the interface with its own button mapping.
 
-4. Create subclass BetaAgent implementing decodeMessage() by selecting fragments whose first and last characters match (case-insensitive).
+4. Create class RetroFunController implementing the interface using classic button controls.
 
-5. Joining selected fragments using -.
+5. Create one controller object at a time.
 
-6. Removing all vowels from the final combined string.
-
-7. Read number of fragments and store them in a string array.
-
-8. Read agent type (1 = AlphaAgent, 2 = BetaAgent).
-
-9. Create the corresponding agent object.
-
-10. Call decodeMessage() and print the decoded output.
-
+6. Call the three methods (jump, shoot, pause) to demonstrate polymorphism.
 
 
 
@@ -40,97 +39,106 @@ To create an abstract class Decoder with an abstract method decodeMessage(), and
 ## PROGRAM:
  ```
 /*
-Program to implement a Abstraction using Java
+Program to implement a Interface using Java
 Developed by:Iyalarasu C
 RegisterNumber: 212223040069
 */
 ```
 
 ## SOURCE CODE:
-
 ```
 import java.util.*;
 
-abstract class Decoder {
-    abstract String decodeMessage(String[] fragments);
+interface GameController {
+    void jump();
+    void shoot();
+    void pause();
 }
 
-
-class AlphaAgent extends Decoder {
-    @Override
-    String decodeMessage(String[] fragments) {
-        List<String> ordered = new ArrayList<>();
-        
-        for (int i = 0; i < fragments.length; i += 2) {
-            ordered.add(fragments[i]);
-        }
-       
-        for (int i = 1; i < fragments.length; i += 2) {
-            ordered.add(fragments[i]);
-        }
-       
-        Collections.reverse(ordered);
-        
-        StringBuilder result = new StringBuilder();
-        for (String s : ordered) {
-            result.append(s);
-        }
-        return result.toString();
+class PlayBoxController implements GameController {
+    public void jump() {
+        System.out.println("PlayBox: Press X to Jump!");
+    }
+    public void shoot() {
+        System.out.println("PlayBox: Press R2 to Shoot!");
+    }
+    public void pause() {
+        System.out.println("PlayBox: Press Start to Pause.");
     }
 }
 
-
-class BetaAgent extends Decoder {
-    @Override
-    String decodeMessage(String[] fragments) {
-        List<String> selected = new ArrayList<>();
-        for (String f : fragments) {
-            if (!f.isEmpty()) {
-                char first = Character.toLowerCase(f.charAt(0));
-                char last = Character.toLowerCase(f.charAt(f.length() - 1));
-                if (first == last) {
-                    selected.add(f);
-                }
-            }
-        }
-
-        String joined = String.join("-", selected);
-        return joined.replaceAll("[AEIOUaeiou]", "");
+class XCubeController implements GameController {
+    public void jump() {
+        System.out.println("X-Cube: Press A to Jump!");
+    }
+    public void shoot() {
+        System.out.println("X-Cube: Press RT to Shoot!");
+    }
+    public void pause() {
+        System.out.println("X-Cube: Press Menu to Pause.");
     }
 }
 
-public class Main {
+class RetroFunController implements GameController {
+    public void jump() {
+        System.out.println("RetroFun: Use Up Arrow to Jump!");
+    }
+    public void shoot() {
+        System.out.println("RetroFun: Press B to Shoot!");
+    }
+    public void pause() {
+        System.out.println("RetroFun: Press P to Pause.");
+    }
+}
+
+public class GameInputSimulator {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int n = Integer.parseInt(sc.nextLine().trim());
-        String[] fragments = new String[n];
-        for (int i = 0; i < n; i++) {
-            fragments[i] = sc.nextLine().trim();
+        String controllerType = sc.nextLine().toLowerCase();
+        String action = sc.nextLine().toLowerCase();
+
+        GameController controller;
+
+        switch (controllerType) {
+            case "playbox":
+                controller = new PlayBoxController();
+                break;
+            case "xcube":
+                controller = new XCubeController();
+                break;
+            case "retro":
+                controller = new RetroFunController();
+                break;
+            default:
+                System.out.println("Unsupported controller!");
+                return;
         }
-        int type = Integer.parseInt(sc.nextLine().trim());
 
-        Decoder agent;
-        if (type == 1)
-            agent = new AlphaAgent();
-        else
-            agent = new BetaAgent();
-
-        System.out.println(agent.decodeMessage(fragments));
-        sc.close();
+        switch (action) {
+            case "jump":
+                controller.jump();
+                break;
+            case "shoot":
+                controller.shoot();
+                break;
+            case "pause":
+                controller.pause();
+                break;
+            default:
+                System.out.println("Unknown action!");
+        }
     }
 }
-```
 
+```
 
 
 
 
 ## OUTPUT:
-<img width="791" height="586" alt="image" src="https://github.com/user-attachments/assets/8e5ac67e-a125-4db4-b804-52e16025fa7e" />
-
+<img width="821" height="293" alt="image" src="https://github.com/user-attachments/assets/77adba3b-7948-47f4-a6ed-f87b7e0eb83b" />
 
 
 ## RESULT:
-Therefore the program successfully decodes messages using the rules defined for AlphaAgent and BetaAgent.
-
+Therefore the program successfully unifies different gaming controllers using a common interface.
 
